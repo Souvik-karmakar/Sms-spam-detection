@@ -4,10 +4,12 @@ import string
 from nltk.corpus import stopwords
 import nltk
 from nltk.stem.porter import PorterStemmer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
 nltk.download('stopwords')
 nltk.download('punkt')
-ps = PorterStemmer()
 
+ps = PorterStemmer()
 
 def transform_text(text):
     text = text.lower()
@@ -33,7 +35,14 @@ def transform_text(text):
 
     return " ".join(y)
 
-tfidf = pickle.load(open('vectorizer.pkl','rb'))
+# Load the pre-trained TF-IDF vectorizer
+tfidf = TfidfVectorizer()
+# Fit the vectorizer with some dummy data or your training data
+# For simplicity, let's assume you have some training data stored in X_train
+X_train = [...]  # Your training data
+tfidf.fit(X_train)
+
+# Load the pre-trained model
 model = pickle.load(open('model.pkl','rb'))
 
 st.title("Email/SMS Spam Classifier")
@@ -41,7 +50,6 @@ st.title("Email/SMS Spam Classifier")
 input_sms = st.text_area("Enter the message")
 
 if st.button('Predict'):
-
     # 1. preprocess
     transformed_sms = transform_text(input_sms)
     # 2. vectorize
